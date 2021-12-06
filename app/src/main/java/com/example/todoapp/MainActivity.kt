@@ -33,6 +33,7 @@ class MainActivity : AppCompatActivity() {
         addItemButton = findViewById(R.id.addButton)
         addItemButton.setOnClickListener {
             alert()
+
         }
 
     }
@@ -45,7 +46,7 @@ class MainActivity : AppCompatActivity() {
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when(item.itemId){
             R.id.delete_option ->{
-                deleteItem()
+               deleteItem()
                 return true
             }
         }
@@ -56,9 +57,13 @@ class MainActivity : AppCompatActivity() {
         val  input = EditText(this)
         input.hint = "Enter to-do item"
         dialogBuilder.setPositiveButton("ADD", DialogInterface.OnClickListener {
-                dialog, id -> toDoList.add(ToDo(input.text.toString()))
+                dialog, id ->
+            val toDoText = input.text.toString()
+            toDoList.add(ToDo(toDoText))
+            recyclerView.adapter = RecyclerViewAdapter(toDoList)
             recyclerView.adapter?.notifyDataSetChanged()
             Log.d("TAG", "alert: ${toDoList.size}")
+
         })
             .setNegativeButton("CANCEL", DialogInterface.OnClickListener {
                     dialog, id -> dialog.cancel()
@@ -69,23 +74,20 @@ class MainActivity : AppCompatActivity() {
         alert.show()
     }
     private fun deleteItem(){
-        if (toDoList.isEmpty()) {
-            Toast.makeText(this, "You have no item to delete!", Toast.LENGTH_SHORT).show()
-            return
-        }
-
-        var plural = "items"
         var deleteCounter = 0
         for (item in toDoList){
             if (item.isSelected)
                 deleteCounter++
         }
 
-        if (deleteCounter == 1) plural = "item"
-        Toast.makeText(this, "$deleteCounter $plural deleted", Toast.LENGTH_SHORT).show()
-
-        // Sorry I cheated this from Almin's code ;)
         toDoList.removeAll { item -> item.isSelected }
+        if (deleteCounter >0 ) {
+            Toast.makeText(this, "$deleteCounter  deleted", Toast.LENGTH_SHORT).show()
+        }
+        else{
+            Toast.makeText(this, "You have no item to delete!", Toast.LENGTH_SHORT).show()
+        }
+
         recyclerView.adapter!!.notifyDataSetChanged()
 
     }

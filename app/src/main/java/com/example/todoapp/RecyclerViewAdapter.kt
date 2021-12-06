@@ -18,19 +18,18 @@ class RecyclerViewAdapter(private val items: ArrayList<ToDo>): RecyclerView.Adap
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        val item = items[position].content
-
+        val item = items[position]
         holder.binding.apply {
-            cbItem.text = item
+            cbItem.isChecked = item.isSelected
+            cbItem.text = item.content
             cbItem.setOnCheckedChangeListener { _, isChecked ->
                 if(cbItem.isChecked){
                     cbItem.setTextColor(Color.GRAY)
                     items[position].isSelected = true
-                }else{
+                }else {
                     cbItem.setTextColor(Color.BLACK)
                     items[position].isSelected = false
                 }
-
             }
         }
     }
@@ -41,6 +40,5 @@ class RecyclerViewAdapter(private val items: ArrayList<ToDo>): RecyclerView.Adap
         items.removeAll{ item -> item.isSelected }
         notifyDataSetChanged()
     }
-
 }
 
